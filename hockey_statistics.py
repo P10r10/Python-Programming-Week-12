@@ -5,8 +5,7 @@ class FileReader:
 
     @staticmethod
     def read_data() -> dict:
-        # file_name = input("file name: ")
-        file_name = "partial.json"  # REMOVE
+        file_name = input("file name: ")
         with open(file_name) as fp:
             return json.loads(fp.read())
 
@@ -32,7 +31,7 @@ commands:
 
     def __run(self):
         while True:
-            command = input("command: ")
+            command = input("\ncommand: ")
             if command == "0":
                 break
             self.__process(command)
@@ -46,6 +45,12 @@ commands:
             self.__countries()
         elif command == "4":
             self.__players_in_team()
+        elif command == "5":
+            self.__players_from_country()
+        elif command == "6":
+            self.__most_points()
+        elif command == "7":
+            self.__most_goals()
 
     def __formatted_player(self, p: dict) -> str:
         return f"{p['name']:21}{p['team']:5}{p['goals']:2} + " \
@@ -70,11 +75,39 @@ commands:
         for country in countries:
             print(country)
 
+    def __display(self, players: list):
+        sorted_players = sorted(
+            players, key=lambda p: p["assists"] + p["goals"], reverse=True)
+        print()
+        for player in sorted_players:
+            print(self.__formatted_player(player))
+
     def __players_in_team(self):
         team = input("team: ")
         players = [p for p in self.__players if p["team"] == team]
-        for player in players:
-            print(self.__formatted_player(player))  # TODO sort
+        self.__display(players)
+
+    def __players_from_country(self):
+        country = input("country: ")
+        players = [p for p in self.__players if p["nationality"] == country]
+        self.__display(players)
+
+    def __most_points(self):
+        nb = int(input("how many: "))
+        sorted_players = sorted(
+            self.__players,
+            key=lambda p: (p["assists"] + p["goals"], p["goals"]),
+            reverse=True)
+        for player in sorted_players[0: nb]:
+            print(self.__formatted_player(player))
+
+    def __most_goals(self):
+        nb = int(input("how many: "))
+        sorted_players = sorted(
+            self.__players, key=lambda p: (p["goals"], -p["games"]),
+            reverse=True)
+        for player in sorted_players[0: nb]:
+            print(self.__formatted_player(player))
 
 
 if __name__ == "__main__":
