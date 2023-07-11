@@ -44,13 +44,18 @@ commands:
             self.__teams()
         elif command == "3":
             self.__countries()
+        elif command == "4":
+            self.__players_in_team()
+
+    def __formatted_player(self, p: dict) -> str:
+        return f"{p['name']:21}{p['team']:5}{p['goals']:2} + " \
+            f"{p['assists']:2} = {p['goals'] + p['assists']:3}"
 
     def __search_for_player(self):
         name = input("name: ")
         try:
             p = [p for p in self.__players if p["name"] == name][0]  # player
-            print(f"{p['name']:21}{p['team']:5}{p['goals']:2} + "
-                  f"{p['assists']:2} = {p['goals'] + p['assists']:3}")
+            print(self.__formatted_player(p))
         except:
             pass
 
@@ -64,6 +69,12 @@ commands:
             list(set([p["nationality"] for p in self.__players])))
         for country in countries:
             print(country)
+
+    def __players_in_team(self):
+        team = input("team: ")
+        players = [p for p in self.__players if p["team"] == team]
+        for player in players:
+            print(self.__formatted_player(player))  # TODO sort
 
 
 if __name__ == "__main__":
